@@ -55,6 +55,6 @@ public class WebLogAspect {
     public void doAfterReturning(Object ret) throws Throwable {
         // 处理完请求，返回内容
         logger.info("RESPONSE : " + ret);
-        System.out.println("asfdgfhgh");
+        System.out.println("a");
     }
 }
