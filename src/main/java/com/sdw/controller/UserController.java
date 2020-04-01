@@ -64,6 +64,7 @@ public class UserController {
         AjaxResult result = null;
         userService.updateByPrimaryKey(user);
         result = new AjaxResult(true, "更新成功");
+
         //result.put("success", true);
         //result.put("msg", "更新成功")；
         return result;
