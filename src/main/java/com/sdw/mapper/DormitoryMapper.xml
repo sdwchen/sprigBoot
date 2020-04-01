@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sdw.mapper.DormitoryMapper">
+    <resultMap id="BaseResultMap" type="com.sdw.entity.Dormitory">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="louceng" jdbcType="VARCHAR" property="louceng"/>
+        <result column="qisnhi" jdbcType="VARCHAR" property="qisnhi"/>
+
+        <association property="user" javaType="com.sdw.entity.User" columnPrefix="u_">
+            <!-- 这里column里面是定义的别名和你查询的语句 -->
+            <id column="id" property="userid"/>
+            <result column="user" property="username"/>
+            <result column="tel" property="tel"/>
+            <result column="realname" property="realname"/>
+        </association>
+    </resultMap>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from dormitory
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.sdw.entity.Dormitory"
+            useGeneratedKeys="true">
+        insert into dormitory (louceng, qisnhi, userid
+        )
+        values (#{louceng,jdbcType=VARCHAR}, #{qisnhi,jdbcType=VARCHAR}, #{user.userid,jdbcType=BIGINT}
+        )
+    </insert>
+    <insert id="add" keyColumn="id" keyProperty="id" parameterType="com.sdw.entity.Dormitory"
+            useGeneratedKeys="true">
+        insert into dormitory (louceng, qisnhi, userid
+        )
+        values (#{louceng}, #{qisnhi}, #{userid}
+               )
+    </insert>
+    <update id="updateByPrimaryKey" parameterType="com.sdw.entity.Dormitory">
+        update dormitory
+        set louceng = #{louceng,jdbcType=VARCHAR},
+        qisnhi = #{qisnhi,jdbcType=VARCHAR},
+        userid = #{user.userid,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select id, louceng, qisnhi, userid
+        from dormitory
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select id, louceng, qisnhi, userid
+        from dormitory
+    </select>
+    <!-- 模糊查询 -->
+    <sql id="where_sql">
+        <where>
+            <if test="keyword!=null">
+                AND u.username like concat('%',#{keyword},'%')
+            </if>
+        </where>
+    </sql>
+    <!-- 查询总数加模糊查询 -->
+    <select id="queryEorPageCount" resultType="long">
+        select count(*) from dormitory
+        <include refid="where_sql"/>
+        <!-- 高级查询加分页 -->
+    </select>
+    <select id="queryForPage" resultMap="BaseResultMap">
+        select d.id,u.username as u_user,u.userid as u_id,u.tel as u_tel,u.realname as u_realname,d.louceng,d.qisnhi from dormitory d LEFT JOIN user u on
+        d.userid=u.userid
+        <include refid="where_sql"/>
+        <if test="page!=null">
+            limit #{start},#{rows}
+        </if>
+    </select>
+    <update id="updateLQ" parameterType="com.sdw.entity.Dormitory">
+        update dormitory
+        set louceng = #{louceng},
+            qisnhi = #{qisnhi}
+        where id = #{id}
+    </update>
+</mapper>

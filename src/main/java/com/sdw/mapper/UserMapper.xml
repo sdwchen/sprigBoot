@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sdw.mapper.UserMapper">
+    <resultMap id="BaseResultMap" type="com.sdw.entity.User">
+        <id column="userId" jdbcType="INTEGER" property="userid"/>
+        <result column="username" jdbcType="VARCHAR" property="username"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="realname" jdbcType="VARCHAR" property="realname"/>
+        <result column="tel" jdbcType="VARCHAR" property="tel"/>
+
+    </resultMap>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from user
+        where userId = #{userid}
+    </delete>
+    <insert id="insert" parameterType="com.sdw.entity.User">
+        insert into user (userId, username, password,
+        realname, tel)
+        values (#{userid}, #{username}, #{password},
+        #{realname}, #{tel})
+    </insert>
+    <update id="updateByPrimaryKey" parameterType="com.sdw.entity.User">
+        update user
+        set username = #{username},
+        realname = #{realname},
+        tel = #{tel},
+        password=#{password}
+        where userId = #{userid}
+    </update>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select userId, username, password, realname, tel
+        from user
+        where userId = #{userid}
+    </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select userId, username, password, realname, tel
+        from user
+    </select>
+    <!--通过用户名查询-->
+    <select id="findByName" parameterType="String" resultMap="BaseResultMap">
+        SELECT * FROM USER WHERE username = #{username}
+    </select>
+    <!-- 模糊查询 -->
+    <sql id="where_sql">
+        <where>
+            <if test="keyword!=null">
+                AND username like concat('%',#{keyword},'%')
+                or realname like concat('%',#{keyword},'%')
+                or tel like concat('%',#{keyword},'%')
+            </if>
+        </where>
+    </sql>
+    <!-- 查询总数加模糊查询 -->
+    <select id="queryEorPageCount" resultType="long">
+        select count(*) from user
+        <include refid="where_sql"/>
+        <!-- 高级查询加分页 -->
+    </select>
+    <select id="queryForPage" resultMap="BaseResultMap">
+        SELECT userid,username,realname,tel,password from `user`
+        <include refid="where_sql"/>
+        <if test="page!=null">
+            limit #{start},#{rows}
+        </if>
+    </select>
+    <!--登录验证-->
+    <select id="login" resultMap="BaseResultMap">
+        select userid,username,realname,tel,password from user where username=#{username} and password=#{password}
+    </select>
+    <!--修改用户名和电话号码-->
+    <update id="updateNameTel" parameterType="com.sdw.entity.User">
+        update user
+        set username = #{username},
+            tel = #{tel}
+        where userId = #{userid}
+    </update>
+</mapper>

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sdw.mapper.FormMapper">
+  <resultMap id="BaseResultMap" type="com.sdw.entity.Form">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="bookname" jdbcType="VARCHAR" property="bookname" />
+    <result column="booktype" jdbcType="VARCHAR" property="booktype" />
+    <result column="clothesname" jdbcType="VARCHAR" property="clothesname" />
+    <result column="clothestype" jdbcType="VARCHAR" property="clothestype" />
+    <result column="othersname" jdbcType="VARCHAR" property="othersname" />
+    <result column="otherstype" jdbcType="VARCHAR" property="otherstype" />
+    <result column="userid" jdbcType="BIGINT" property="userid" />
+    <result column="dormitoryid" jdbcType="BIGINT" property="dormitoryid" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+    <result column="starttime" jdbcType="TIMESTAMP" property="starttime" />
+    <result column="endtime" jdbcType="TIMESTAMP" property="endtime" />
+    <association property="user" javaType="com.sdw.entity.User" columnPrefix="u_">
+      <!-- 这里column里面是定义的别名和你查询的语句 -->
+      <id column="id" property="userid"/>
+      <result column="user" property="username"/>
+      <result column="tel" property="tel"/>
+    </association>
+    <association property="dormitory" javaType="com.sdw.entity.Dormitory" columnPrefix="d_">
+      <!-- 这里column里面是定义的别名和你查询的语句 -->
+      <id column="id" property="id"/>
+      <result column="louceng" property="louceng"/>
+      <result column="qisnhi" property="qisnhi"/>
+    </association>
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from form
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.sdw.entity.Form" useGeneratedKeys="true">
+    insert into form (bookname, booktype, clothesname, 
+      clothestype, othersname, otherstype,
+      dormitoryid,userid, state, starttime,
+      endtime)
+    values (#{bookname}, #{booktype}, #{clothesname},
+      #{clothestype}, #{othersname}, #{otherstype},#{dormitory.id,jdbcType=BIGINT},
+      #{user.userid,jdbcType=BIGINT}, #{state}, #{starttime},
+      #{endtime})
+  </insert>
+  <!--前端App添加数据接口-->
+  <insert id="add" keyColumn="id" keyProperty="id" parameterType="com.sdw.entity.Form" useGeneratedKeys="true">
+    insert into form (bookname, booktype, clothesname,
+                      clothestype, othersname, otherstype,
+                      dormitoryid,userid, state, starttime,
+                      endtime)
+    values (#{bookname}, #{booktype}, #{clothesname},
+            #{clothestype}, #{othersname}, #{otherstype},#{dormitoryid,jdbcType=BIGINT},
+            #{userid,jdbcType=BIGINT}, #{state}, #{starttime},
+            #{endtime})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.sdw.entity.Form">
+    update form
+    set bookname = #{bookname,jdbcType=VARCHAR},
+      booktype = #{booktype,jdbcType=VARCHAR},
+      clothesname = #{clothesname,jdbcType=VARCHAR},
+      clothestype = #{clothestype,jdbcType=VARCHAR},
+      othersname = #{othersname,jdbcType=VARCHAR},
+      otherstype = #{otherstype,jdbcType=VARCHAR},
+      dormitoryid = #{dormitory.id,jdbcType=BIGINT},
+      userid = #{user.userid,jdbcType=BIGINT},
+      state = #{state,jdbcType=INTEGER},
+      starttime = #{starttime,jdbcType=TIMESTAMP},
+      endtime = #{endtime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select id, bookname, booktype, clothesname, clothestype, othersname, otherstype, 
+    userid, state, starttime, endtime
+    from form
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, bookname, booktype, clothesname, clothestype, othersname, otherstype, 
+    userid, state, starttime, endtime
+    from form
+  </select>
+
+  <!-- 模糊查询 需要什么模糊查询再添加-->
+  <sql id="where_sql">
+    <where>
+      <if test="keyword!=null">
+        AND id like concat('%',#{keyword},'%')
+        or bookname like concat('%',#{keyword},'%')
+      </if>
+    </where>
+  </sql>
+  <!-- 查询总数加模糊查询 -->
+  <select id="queryEorPageCount" resultType="long">
+    select count(*) from form
+    <include refid="where_sql"/>
+    <!-- 高级查询加分页 -->
+  </select>
+  <select id="queryForPage" resultMap="BaseResultMap">
+    select f.id,f.bookname,f.booktype,f.clothesname,f.clothestype,
+    f.othersname,f.otherstype,f.state,f.starttime,f.endtime,f.dormitoryid,
+    u.username as u_user,u.userid as u_id,u.tel as u_tel,d.id as d_id,
+    d.louceng as d_louceng,d.qisnhi as d_qisnhi
+    from form f LEFT JOIN user u on (f.userid=u.userid) JOIN dormitory d on (f.dormitoryid=d.id)
+
+    <include refid="where_sql"/>
+    <if test="page!=null">
+      limit #{start},#{rows}
+    </if>
+  </select>
+  <!--当state=0时这个订单已经处在预约状态，但是管理员并没有接受-->
+  <select id="findOrder" resultMap="BaseResultMap">
+    select f.id,f.bookname,f.booktype,f.clothesname,f.clothestype,
+    f.othersname,f.otherstype,f.state,f.starttime,f.endtime,f.dormitoryid,
+    u.username as u_user,u.userid as u_id,u.tel as u_tel,d.id as d_id,
+    d.louceng as d_louceng,d.qisnhi as d_qisnhi
+    from form f LEFT JOIN user u on (f.userid=u.userid) JOIN dormitory d on (f.dormitoryid=d.id)
+    where f.state=0 and f.userid=#{userid}
+  </select>
+  <!--当state=1时这个订单已经处在完成状态-->
+  <select id="findAllOrder" resultMap="BaseResultMap">
+    select f.id,f.bookname,f.booktype,f.clothesname,f.clothestype,
+           f.othersname,f.otherstype,f.state,f.starttime,f.endtime,f.dormitoryid,
+           u.username as u_user,u.userid as u_id,u.tel as u_tel,d.id as d_id,
+           d.louceng as d_louceng,d.qisnhi as d_qisnhi
+    from form f LEFT JOIN user u on (f.userid=u.userid) JOIN dormitory d on (f.dormitoryid=d.id)
+    where f.state=1 and f.userid=#{userid}
+  </select>
+  <!--查询所有记录-->
+  <select id="findAll" resultMap="BaseResultMap">
+    select f.id,f.bookname,f.booktype,f.clothesname,f.clothestype,
+           f.othersname,f.otherstype,f.state,f.starttime,f.endtime,f.dormitoryid,
+           u.username as u_user,u.userid as u_id,u.tel as u_tel,d.id as d_id,
+           d.louceng as d_louceng,d.qisnhi as d_qisnhi
+    from form f LEFT JOIN user u on (f.userid=u.userid) JOIN dormitory d on (f.dormitoryid=d.id)
+    where f.userid=#{userid}
+  </select>
+</mapper>

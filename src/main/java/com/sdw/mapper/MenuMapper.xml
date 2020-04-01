@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sdw.mapper.MenuMapper">
+    <resultMap id="BaseResultMap" type="com.sdw.entity.Menu">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="text" jdbcType="VARCHAR" property="text"/>
+        <result column="attributes" jdbcType="VARCHAR" property="attributes"/>
+    </resultMap>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from menu
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.sdw.entity.Menu" useGeneratedKeys="true">
+        insert into menu (text, attributes)
+        values (#{text,jdbcType=VARCHAR}, #{attributes,jdbcType=VARCHAR})
+    </insert>
+    <update id="updateByPrimaryKey" parameterType="com.sdw.entity.Menu">
+        update menu
+        set text = #{text,jdbcType=VARCHAR},
+        attributes = #{attributes,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select id, text, attributes
+        from menu
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select id, text, attributes
+        from menu
+    </select>
+    <select id="selectRoot" resultMap="BaseResultMap">
+        select id,text,attributes from menu
+    </select>
+</mapper>

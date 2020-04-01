@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sdw.mapper.InformationMapper">
+  <resultMap id="BaseResultMap" type="com.sdw.entity.Information">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="informationtitle" jdbcType="VARCHAR" property="informationtitle" />
+    <result column="information" jdbcType="VARCHAR" property="information" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from information
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.sdw.entity.Information" useGeneratedKeys="true">
+    insert into information (informationtitle, information)
+    values (#{informationtitle,jdbcType=VARCHAR}, #{information,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.sdw.entity.Information">
+    update information
+    set informationtitle = #{informationtitle,jdbcType=VARCHAR},
+      information = #{information,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select id, informationtitle, information
+    from information
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, informationtitle, information
+    from information
+  </select>
+  <!-- 模糊查询 -->
+  <sql id="where_sql">
+    <where>
+      <if test="keyword!=null">
+
+      </if>
+    </where>
+  </sql>
+  <!-- 查询总数加模糊查询 -->
+  <select id="queryEorPageCount" resultType="long">
+    select count(*) from information
+    <include refid="where_sql"/>
+    <!-- 高级查询加分页 -->
+  </select>
+  <select id="queryForPage" resultMap="BaseResultMap">
+    SELECT id, informationtitle, information from information
+    <include refid="where_sql"/>
+    <if test="page!=null">
+      limit #{start},#{rows}
+    </if>
+  </select>
+</mapper>

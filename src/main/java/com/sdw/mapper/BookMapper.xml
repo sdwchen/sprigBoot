@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sdw.mapper.BookMapper">
+    <resultMap id="BaseResultMap" type="com.sdw.entity.Book">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="bookname" jdbcType="VARCHAR" property="bookname"/>
+        <result column="booktype" jdbcType="VARCHAR" property="booktype"/>
+        <result column="orderid" jdbcType="BIGINT" property="orderid"/>
+
+        <association property="dingdan" javaType="com.sdw.entity.Dingdan" columnPrefix="d_">
+            <!-- 这里column里面是定义的别名和你查询的语句 -->
+            <id column="id" property="id"/>
+            <id column="bookid" property="bookid"/>
+        </association>
+
+    </resultMap>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from book
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.sdw.entity.Book" useGeneratedKeys="true">
+        insert into book (bookname, booktype, orderid
+        )
+        values (#{bookname,jdbcType=VARCHAR}, #{booktype,jdbcType=VARCHAR}, #{dingdan.bookid,jdbcType=BIGINT}
+        )
+    </insert>
+    <update id="updateByPrimaryKey" parameterType="com.sdw.entity.Book">
+        update book
+        set bookname = #{bookname,jdbcType=VARCHAR},
+        booktype = #{booktype,jdbcType=VARCHAR},
+        orderid = #{dingdan.bookid,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select id, bookname, booktype, orderid
+        from book
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select id, bookname, booktype, orderid
+        from book
+    </select>
+    <!-- 模糊查询 -->
+    <sql id="where_sql">
+        <where>
+            <if test="keyword!=null">
+                AND bookname like concat('%',#{keyword},'%')
+            </if>
+        </where>
+    </sql>
+    <!-- 查询总数加模糊查询 -->
+    <select id="queryEorPageCount" resultType="long">
+        select count(*) from book
+        <include refid="where_sql"/>
+        <!-- 高级查询加分页 -->
+    </select>
+    <select id="queryForPage" resultMap="BaseResultMap">
+        SELECT b.id,b.orderid,d.bookid as d_bookid,d.id as d_id,b.bookname,b.booktype FROM dingdan d
+        INNER JOIN book b ON(b.orderid=d.bookid)
+        <include refid="where_sql"/>
+        <if test="page!=null">
+            limit #{start},#{rows}
+        </if>
+    </select>
+</mapper>

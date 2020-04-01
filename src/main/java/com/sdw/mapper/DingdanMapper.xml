@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sdw.mapper.DingdanMapper">
+    <resultMap id="BaseResultMap" type="com.sdw.entity.Dingdan">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="bookid" jdbcType="BIGINT" property="bookid"/>
+        <result column="userid" jdbcType="BIGINT" property="userid"/>
+        <result column="state" jdbcType="INTEGER" property="state"/>
+        <result column="clothesid" jdbcType="BIGINT" property="clothesid"/>
+        <result column="othersid" jdbcType="BIGINT" property="othersid"/>
+        <result column="time" jdbcType="TIMESTAMP" property="time"/>
+        <association property="user" javaType="com.sdw.entity.User" columnPrefix="u_">
+            <!-- 这里column里面是定义的别名和你查询的语句 -->
+            <id column="id" property="userid"/>
+            <id column="user" property="username"/>
+        </association>
+        <association property="book" javaType="com.sdw.entity.Book" columnPrefix="b_">
+            <!-- 这里column里面是定义的别名和你查询的语句 -->
+            <id column="id" property="id"/>
+            <id column="bookname" property="bookname"/>
+            <id column="booktype" property="booktype"/>
+        </association>
+        <association property="clothes" javaType="com.sdw.entity.Clothes" columnPrefix="c_">
+            <!-- 这里column里面是定义的别名和你查询的语句 -->
+            <id column="id" property="id"/>
+            <id column="clothesname" property="clothesname"/>
+            <id column="clothestype" property="clothestype"/>
+        </association>
+        <association property="others" javaType="com.sdw.entity.Others" columnPrefix="o_">
+            <!-- 这里column里面是定义的别名和你查询的语句 -->
+            <id column="id" property="id"/>
+            <id column="othersname" property="othersname"/>
+            <id column="otherstype" property="otherstype"/>
+        </association>
+    </resultMap>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from dingdan
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.sdw.entity.Dingdan" useGeneratedKeys="true">
+        insert into dingdan (bookid, userid, state,
+        clothesid, othersid, time
+        )
+        values (#{bookid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT}, #{state,jdbcType=INTEGER},
+        #{clothesid,jdbcType=BIGINT}, #{othersid,jdbcType=BIGINT}, #{time,jdbcType=TIMESTAMP}
+        )
+    </insert>
+    <update id="updateByPrimaryKey" parameterType="com.sdw.entity.Dingdan">
+        update dingdan
+        set bookid = #{bookid,jdbcType=BIGINT},
+        userid = #{userid,jdbcType=BIGINT},
+        state = #{state,jdbcType=INTEGER},
+        clothesid = #{clothesid,jdbcType=BIGINT},
+        othersid = #{othersid,jdbcType=BIGINT},
+        time = #{time,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select id, bookid, userid, state, clothesid, othersid, time
+        from dingdan
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select id, bookid, userid, state, clothesid, othersid, time
+        from dingdan
+    </select>
+    <!-- 模糊查询 -->
+    <sql id="where_sql">
+        <where>
+            <if test="keyword!=null">
+
+            </if>
+        </where>
+    </sql>
+    <!--订单-->
+    <sql id="dingdan_sql">
+        INNER JOIN dingdan d ON (d.userid=u.userid)
+    </sql>
+    <!--书本-->
+    <sql id="book_sql">
+        INNER JOIN book b ON(b.orderid=d.bookid)
+    </sql>
+    <!--衣服-->
+    <sql id="clothes_sql">
+        INNER JOIN clothes c ON(c.orderid=d.clothesid)
+    </sql>
+    <!--其它-->
+    <sql id="others_sql">
+        INNER JOIN others o ON (o.orderid=d.othersid)
+    </sql>
+    <!-- 查询总数加模糊查询 -->
+    <select id="queryEorPageCount" resultType="long">
+        select count(*) from dingdan
+        <include refid="where_sql"/>
+        <!-- 高级查询加分页 -->
+    </select>
+    <!--订单查询 在这里查询了5个表的数据-->
+    <select id="queryForPage" resultMap="BaseResultMap">
+        SELECT d.id,u.userid,d.userid,d.state,d.time,b.bookname as b_bookname,
+        u.username as u_user,b.booktype as b_booktype,c.clothesname as c_clothesname,
+        c.clothestype as c_clothestype,
+        o.othersname as o_othersname,o.otherstype as o_otherstype
+        FROM user u
+        <include refid="dingdan_sql"/>
+        <include refid="book_sql"/>
+        <include refid="clothes_sql"/>
+        <include refid="others_sql"/>
+        <include refid="where_sql"/>
+        <if test="page!=null">
+            limit #{start},#{rows}
+        </if>
+    </select>
+</mapper>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sdw.mapper.ClothesMapper">
+    <resultMap id="BaseResultMap" type="com.sdw.entity.Clothes">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="clothesname" jdbcType="VARCHAR" property="clothesname"/>
+        <result column="clothestype" jdbcType="VARCHAR" property="clothestype"/>
+        <result column="orderid" jdbcType="BIGINT" property="orderid"/>
+        <association property="dingdan" javaType="com.sdw.entity.Dingdan" columnPrefix="d_">
+            <!-- 这里column里面是定义的别名和你查询的语句 -->
+            <id column="id" property="id"/>
+            <id column="clothesid" property="clothesid"/>
+        </association>
+
+    </resultMap>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from clothes
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.sdw.entity.Clothes" useGeneratedKeys="true">
+        insert into clothes (clothesname, clothestype, orderid
+        )
+        values (#{clothesname,jdbcType=VARCHAR}, #{clothestype,jdbcType=VARCHAR}, #{dingdan.clothesid,jdbcType=BIGINT}
+        )
+    </insert>
+    <update id="updateByPrimaryKey" parameterType="com.sdw.entity.Clothes">
+        update clothes
+        set clothesname = #{clothesname,jdbcType=VARCHAR},
+        clothestype = #{clothestype,jdbcType=VARCHAR},
+        orderid = #{dingdan.clothesid,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select id, clothesname, clothestype, orderid
+        from clothes
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select id, clothesname, clothestype, orderid
+        from clothes
+    </select>
+    <!-- 模糊查询 -->
+    <sql id="where_sql">
+        <where>
+            <if test="keyword!=null">
+                AND clothesname like concat('%',#{keyword},'%')
+            </if>
+        </where>
+    </sql>
+    <!-- 查询总数加模糊查询 -->
+    <select id="queryEorPageCount" resultType="long">
+        select count(*) from clothes
+        <include refid="where_sql"/>
+        <!-- 高级查询加分页 -->
+    </select>
+    <select id="queryForPage" resultMap="BaseResultMap">
+        SELECT c.id,c.orderid,c.clothesname ,c.clothestype, d.clothesid as d_clothesid,d.id as d_id FROM dingdan d
+        INNER JOIN clothes c ON(c.orderid=d.clothesid)
+        <include refid="where_sql"/>
+        <if test="page!=null">
+            limit #{start},#{rows}
+        </if>
+    </select>
+</mapper>

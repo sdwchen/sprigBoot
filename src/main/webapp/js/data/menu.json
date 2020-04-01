@@ -1,0 +1,9 @@
+[
+  {
+    "id": 1,
+    "text": "用户管理",
+    "attributes": {
+      "url": "/user"
+    }
+  }
+]
