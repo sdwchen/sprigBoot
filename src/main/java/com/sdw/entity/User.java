@@ -15,6 +15,6 @@ public class User {
     private String realname;
 
     private String tel;
-
+    private String imgurl;
 
 }

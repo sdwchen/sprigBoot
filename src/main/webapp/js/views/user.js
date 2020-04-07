@@ -17,7 +17,7 @@ $(function () {
                 {field: 'username', align: 'center', title: '用户名', width: 1},
                 {field: 'realname', align: 'center', title: '真实名字', width: 1},
                 {field: 'tel', align: 'center', title: '电话号码', width: 1},
-
+                {field: 'imgurl', align: 'center', title: '头像', width: 1},
             ]
         ],
 
@@ -135,4 +135,21 @@ function searchBtn() {
     });
 
 }
-
+function submit2(){
+    var type = "file";          //后台接收时需要的参数名称，自定义即可
+    var id = "cert";            //即input的id，用来寻找值
+    var formData = new FormData();
+    console.log(formData)
+    formData.append(type, $("#"+id)[0].files[0]);    //生成一对表单属性
+    $.ajax({
+        type: "POST",           //因为是传输文件，所以必须是post
+        url: '/uploadImg',         //对应的后台处理类的地址
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (data) {
+            console.log(data.url)
+            $("#imgurl").val(data.url)
+        }
+    });
+}

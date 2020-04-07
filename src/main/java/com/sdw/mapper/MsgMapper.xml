@@ -10,6 +10,7 @@
     <!-- 这里column里面是定义的别名和你查询的语句 -->
     <id column="userid" property="userid"/>
     <id column="username" property="username"/>
+      <id column="imgurl" property="imgurl"/>
   </association>
     <association property="message" javaType="com.sdw.entity.Message" columnPrefix="m_">
       <!-- 这里column里面是定义的别名和你查询的语句 -->
@@ -69,13 +70,13 @@
   </select>
   <!--查询这篇文章下面有多少评论-->
   <select id="allMsg" resultMap="BaseResultMap">
-    SELECT ms.id,ms.msg,ms.messageid,m.userid,m.id as m_id,m.message as m_message,m.time as m_time,u.userid as u_userid,u.username as u_username FROM user u
+    SELECT ms.id,ms.msg,ms.messageid,m.userid,m.id as m_id,m.message as m_message,m.time as m_time,u.userid as u_userid,u.username as u_username,u.imgurl as u_imgurl FROM user u
     INNER JOIN msg ms ON(ms.userid=u.userid) INNER JOIN message m ON(ms.messageid=m.id)
    where messageid=#{messageid}
   </select>
   <!--根据用户id查查询你发的所有文章和这篇文章下面的所有评论-->
   <select id="allMessageMsg" resultMap="BaseResultMap">
-    SELECT ms.id,ms.msg,ms.messageid,m.userid,m.id as m_id,m.message as m_message,m.time as m_time,u.userid as u_userid,u.username as u_username FROM user u
+    SELECT ms.id,ms.msg,ms.messageid,m.userid,m.id as m_id,m.message as m_message,m.time as m_time,u.userid as u_userid,u.username as u_username,u.imgurl as u_imgurl FROM user u
      INNER JOIN msg ms ON(ms.userid=u.userid) INNER JOIN message m ON(ms.messageid=m.id)
     where  u.userid=#{userid}
   </select>

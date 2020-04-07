@@ -7,7 +7,7 @@
         <result column="password" jdbcType="VARCHAR" property="password"/>
         <result column="realname" jdbcType="VARCHAR" property="realname"/>
         <result column="tel" jdbcType="VARCHAR" property="tel"/>
-
+        <result column="imgurl" jdbcType="VARCHAR" property="imgurl"/>
     </resultMap>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
         delete from user
@@ -15,25 +15,26 @@
     </delete>
     <insert id="insert" parameterType="com.sdw.entity.User">
         insert into user (userId, username, password,
-        realname, tel)
+        realname, tel,imgurl)
         values (#{userid}, #{username}, #{password},
-        #{realname}, #{tel})
+        #{realname}, #{tel},#{imgurl})
     </insert>
     <update id="updateByPrimaryKey" parameterType="com.sdw.entity.User">
         update user
         set username = #{username},
         realname = #{realname},
         tel = #{tel},
-        password=#{password}
+        password=#{password},
+            imgurl=#{imgurl}
         where userId = #{userid}
     </update>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-        select userId, username, password, realname, tel
+        select userId, username, password, realname, tel,imgurl
         from user
         where userId = #{userid}
     </select>
     <select id="selectAll" resultMap="BaseResultMap">
-        select userId, username, password, realname, tel
+        select userId, username, password, realname, tel,imgurl
         from user
     </select>
     <!--通过用户名查询-->
@@ -57,7 +58,7 @@
         <!-- 高级查询加分页 -->
     </select>
     <select id="queryForPage" resultMap="BaseResultMap">
-        SELECT userid,username,realname,tel,password from `user`
+        SELECT userid,username,realname,tel,password,imgurl from `user`
         <include refid="where_sql"/>
         <if test="page!=null">
             limit #{start},#{rows}
@@ -65,7 +66,7 @@
     </select>
     <!--登录验证-->
     <select id="login" resultMap="BaseResultMap">
-        select userid,username,realname,tel,password from user where username=#{username} and password=#{password}
+        select userid,username,realname,tel,password,imgurl from user where username=#{username} and password=#{password}
     </select>
     <!--修改用户名和电话号码-->
     <update id="updateNameTel" parameterType="com.sdw.entity.User">

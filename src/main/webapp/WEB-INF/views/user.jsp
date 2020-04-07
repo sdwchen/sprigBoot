@@ -26,9 +26,17 @@
                 <td>电话号码</td>
                 <td><input type="text" name="tel"></td>
             </tr>
+            <tr>
+                <td>头像</td>
+                <td><input type="text" id="imgurl" name="imgurl"></td>
+            </tr>
 
         </table>
     </form>
+    <div>
+        <input id="cert" type="file" />
+        <input type="button" value="上传" onclick="submit2();" />
+    </div>
 </div>
 <table id="user_datagrid"></table>
 <div id="user_datagrid_tb">

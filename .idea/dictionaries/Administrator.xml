@@ -2,9 +2,11 @@
   <dictionary name="Administrator">
     <words>
       <w>beforuser</w>
+      <w>bname</w>
       <w>bookid</w>
       <w>bookname</w>
       <w>booktype</w>
+      <w>btype</w>
       <w>bucketname</w>
       <w>ccontroller</w>
       <w>clothesid</w>
@@ -19,6 +21,7 @@
       <w>endtime</w>
       <w>findbylogin</w>
       <w>huixian</w>
+      <w>imgurl</w>
       <w>informationlist</w>
       <w>informationtitle</w>
       <w>listt</w>
@@ -29,7 +32,9 @@
       <w>othersid</w>
       <w>othersname</w>
       <w>otherstype</w>
+      <w>qiniu</w>
       <w>qisnhi</w>
+      <w>randomhouse</w>
       <w>realname</w>
       <w>regist</w>
       <w>rownumbers</w>

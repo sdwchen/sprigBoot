@@ -13,5 +13,5 @@ public class Information {
 
     private String information;//资讯内容
 
-
+    private String imgurl;//资讯图片
 }

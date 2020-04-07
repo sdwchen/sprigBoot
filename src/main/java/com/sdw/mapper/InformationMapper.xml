@@ -5,28 +5,30 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="informationtitle" jdbcType="VARCHAR" property="informationtitle" />
     <result column="information" jdbcType="VARCHAR" property="information" />
+    <result column="imgurl" jdbcType="VARCHAR" property="imgurl" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from information
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.sdw.entity.Information" useGeneratedKeys="true">
-    insert into information (informationtitle, information)
-    values (#{informationtitle,jdbcType=VARCHAR}, #{information,jdbcType=VARCHAR})
+    insert into information (informationtitle, information,imgurl)
+    values (#{informationtitle,jdbcType=VARCHAR}, #{information,jdbcType=VARCHAR},#{imgurl})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.sdw.entity.Information">
     update information
     set informationtitle = #{informationtitle,jdbcType=VARCHAR},
-      information = #{information,jdbcType=VARCHAR}
+      information = #{information,jdbcType=VARCHAR},
+        imgurl=#{imgurl}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select id, informationtitle, information
+    select id, informationtitle, information,imgurl
     from information
     where id = #{id,jdbcType=BIGINT}
   </select>
   <select id="selectAll" resultMap="BaseResultMap">
-    select id, informationtitle, information
+    select id, informationtitle, information,imgurl
     from information
   </select>
   <!-- 模糊查询 -->
@@ -44,7 +46,7 @@
     <!-- 高级查询加分页 -->
   </select>
   <select id="queryForPage" resultMap="BaseResultMap">
-    SELECT id, informationtitle, information from information
+    SELECT id, informationtitle, information,imgurl from information
     <include refid="where_sql"/>
     <if test="page!=null">
       limit #{start},#{rows}

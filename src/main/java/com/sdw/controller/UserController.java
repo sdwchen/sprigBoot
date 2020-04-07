@@ -48,6 +48,7 @@ public class UserController {
     @RequestMapping("/user_save")
     @ResponseBody
     public AjaxResult save(User user) {
+
         AjaxResult result = null;
         userService.insert(user);
         result = new AjaxResult(true, "保存成功");

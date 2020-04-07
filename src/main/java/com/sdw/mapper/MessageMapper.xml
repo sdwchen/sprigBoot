@@ -10,6 +10,7 @@
       <!-- 这里column里面是定义的别名和你查询的语句 -->
       <id column="userid" property="userid"/>
       <id column="username" property="username"/>
+      <id column="imgurl" property="imgurl"/>
     </association>
 
   </resultMap>
@@ -54,7 +55,7 @@
     <!-- 高级查询加分页 -->
   </select>
   <select id="queryForPage" resultMap="BaseResultMap">
-    SELECT m.id,m.message,m.time,u.userid as u_userid,u.username as u_username FROM user u
+    SELECT m.id,m.message,m.time,u.userid as u_userid,u.username as u_username,u.imgurl as u_imgurl FROM user u
     INNER JOIN message m ON(m.userid=u.userid)
     <include refid="where_sql"/>
     <if test="page!=null">
@@ -69,7 +70,7 @@
            )
   </insert>
   <select id="allMessage" resultMap="BaseResultMap">
-    SELECT m.id,m.message,m.time,u.userid as u_userid,u.username as u_username FROM user u
+    SELECT m.id,m.message,m.time,u.userid as u_userid,u.username as u_username,u.imgurl as u_imgurl FROM user u
     INNER JOIN message m ON(m.userid=u.userid)
     where u.userid=#{userid}
   </select>
