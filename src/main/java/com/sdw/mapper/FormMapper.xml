@@ -19,6 +19,7 @@
       <id column="id" property="userid"/>
       <result column="user" property="username"/>
       <result column="tel" property="tel"/>
+      <result column="imgurl" property="imgurl"/>
     </association>
     <association property="dormitory" javaType="com.sdw.entity.Dormitory" columnPrefix="d_">
       <!-- 这里column里面是定义的别名和你查询的语句 -->
@@ -110,7 +111,7 @@
   <select id="findOrder" resultMap="BaseResultMap">
     select f.id,f.bookname,f.booktype,f.clothesname,f.clothestype,
     f.othersname,f.otherstype,f.state,f.starttime,f.endtime,f.dormitoryid,
-    u.username as u_user,u.userid as u_id,u.tel as u_tel,d.id as d_id,
+    u.username as u_user,u.userid as u_id,u.tel as u_tel,u.imgurl as u_imgurl,d.id as d_id,
     d.louceng as d_louceng,d.qisnhi as d_qisnhi
     from form f LEFT JOIN user u on (f.userid=u.userid) JOIN dormitory d on (f.dormitoryid=d.id)
     where f.state=0 and f.userid=#{userid}
@@ -119,7 +120,7 @@
   <select id="findAllOrder" resultMap="BaseResultMap">
     select f.id,f.bookname,f.booktype,f.clothesname,f.clothestype,
            f.othersname,f.otherstype,f.state,f.starttime,f.endtime,f.dormitoryid,
-           u.username as u_user,u.userid as u_id,u.tel as u_tel,d.id as d_id,
+           u.username as u_user,u.userid as u_id,u.tel as u_tel,u.imgurl as u_imgurl,d.id as d_id,
            d.louceng as d_louceng,d.qisnhi as d_qisnhi
     from form f LEFT JOIN user u on (f.userid=u.userid) JOIN dormitory d on (f.dormitoryid=d.id)
     where f.state=1 and f.userid=#{userid}
@@ -128,7 +129,7 @@
   <select id="findAll" resultMap="BaseResultMap">
     select f.id,f.bookname,f.booktype,f.clothesname,f.clothestype,
            f.othersname,f.otherstype,f.state,f.starttime,f.endtime,f.dormitoryid,
-           u.username as u_user,u.userid as u_id,u.tel as u_tel,d.id as d_id,
+           u.username as u_user,u.userid as u_id,u.tel as u_tel,u.imgurl as u_imgurl,d.id as d_id,
            d.louceng as d_louceng,d.qisnhi as d_qisnhi
     from form f LEFT JOIN user u on (f.userid=u.userid) JOIN dormitory d on (f.dormitoryid=d.id)
     where f.userid=#{userid}

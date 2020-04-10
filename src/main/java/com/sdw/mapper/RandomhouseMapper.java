@@ -13,4 +13,6 @@ public interface RandomhouseMapper {
     List<Randomhouse> selectAll();
 
     int updateByPrimaryKey(Randomhouse record);
+    //修改状态
+    int updateState(Randomhouse record);
 }

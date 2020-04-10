@@ -11,7 +11,6 @@
         <version>2.0.0.RELEASE</version>
     </parent>
     <dependencies>
-        <!-- SpringBoot 对lombok 支持 -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -112,6 +111,14 @@
                     <include>**/*.xml</include>
                 </includes>
             </resource>
+            <resource>
+                <directory>src/main/webapp</directory>
+                <targetPath>META-INF/resources</targetPath>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+
         </resources>
     </build>
 </project>

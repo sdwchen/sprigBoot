@@ -24,9 +24,16 @@
                 <td>资讯内容</td>
                 <td><input type="text" name="information"></td>
             </tr>
-
+            <tr>
+                <td>图片</td>
+                <td><input type="text" id="imgurl" name="imgurl"></td>
+            </tr>
         </table>
     </form>
+    <div>
+        <input id="cert" type="file" />
+        <input type="button" value="上传" onclick="submit2();" />
+    </div>
 </div>
 <table id="information_datagrid"></table>
 <div id="information_datagrid_tb">

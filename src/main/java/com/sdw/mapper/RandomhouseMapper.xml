@@ -5,16 +5,18 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="bname" jdbcType="VARCHAR" property="bname" />
     <result column="btype" jdbcType="VARCHAR" property="btype" />
-    <result column="time" jdbcType="VARCHAR" property="time" />
+    <result column="ztime" jdbcType="VARCHAR" property="ztime" />
     <result column="state" jdbcType="BIGINT" property="state" />
     <result column="starttime" jdbcType="TIMESTAMP" property="starttime" />
     <result column="endtime" jdbcType="TIMESTAMP" property="endtime" />
     <result column="userid" jdbcType="BIGINT" property="userid" />
-    <result column="describe" jdbcType="VARCHAR" property="describe" />
+    <result column="bookdescribe" jdbcType="VARCHAR" property="bookdescribe" />
     <association property="user" javaType="com.sdw.entity.User" columnPrefix="u_">
       <!-- 这里column里面是定义的别名和你查询的语句 -->
       <id column="userid" property="userid"/>
       <id column="username" property="username"/>
+      <id column="tel" property="tel"/>
+      <id column="imgurl" property="imgurl"/>
     </association>
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
@@ -22,33 +24,39 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.sdw.entity.Randomhouse" useGeneratedKeys="true">
-    insert into randomhouse (bname, btype, time, 
-      state, starttime, endtime, 
-      userid, describe)
-    values (#{bname,jdbcType=VARCHAR}, #{btype,jdbcType=VARCHAR}, #{time,jdbcType=VARCHAR}, 
-      #{state,jdbcType=BIGINT}, #{starttime,jdbcType=TIMESTAMP}, #{endtime,jdbcType=TIMESTAMP}, 
-      #{userid,jdbcType=BIGINT}, #{describe,jdbcType=VARCHAR})
+    insert into randomhouse (bname, btype, ztime,
+      state, starttime, endtime,
+      userid, bookdescribe)
+    values (#{bname,jdbcType=VARCHAR}, #{btype,jdbcType=VARCHAR}, #{ztime,jdbcType=VARCHAR},
+      #{state,jdbcType=BIGINT}, #{starttime,jdbcType=TIMESTAMP}, #{endtime,jdbcType=TIMESTAMP},
+      #{userid,jdbcType=BIGINT}, #{bookdescribe,jdbcType=VARCHAR})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.sdw.entity.Randomhouse">
     update randomhouse
     set bname = #{bname,jdbcType=VARCHAR},
       btype = #{btype,jdbcType=VARCHAR},
-      time = #{time,jdbcType=VARCHAR},
+        ztime = #{ztime,jdbcType=VARCHAR},
       state = #{state,jdbcType=BIGINT},
       starttime = #{starttime,jdbcType=TIMESTAMP},
       endtime = #{endtime,jdbcType=TIMESTAMP},
       userid = #{userid,jdbcType=BIGINT},
-      describe = #{describe,jdbcType=VARCHAR}
+        bookdescribe = #{bookdescribe,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <update id="updateState" parameterType="com.sdw.entity.Randomhouse">
+    update randomhouse
+    set  state = #{state,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select id, bname, btype, time, state, starttime, endtime, userid, describe
+    select id, bname, btype, ztime, state, starttime, endtime, userid, bookdescribe
     from randomhouse
     where id = #{id,jdbcType=BIGINT}
   </select>
   <select id="selectAll" resultMap="BaseResultMap">
-  select r.id, r.bname, r.btype, r.time, r.state, r.starttime, r.endtime, r.userid, r.describe,
-         u.userid as u_userid,u.username as u_username
+  select r.id, r.bname, r.btype, r.ztime, r.state, r.starttime, r.endtime, r.userid, r.bookdescribe,
+         u.userid as u_userid,u.username as u_username,u.tel as u_tel,u.imgurl as u_imgurl
   from randomhouse r INNER JOIN user u on r.userid=u.userid
 </select>
 </mapper>

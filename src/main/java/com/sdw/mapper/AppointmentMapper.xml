@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sdw.mapper.AppointmentMapper">
+  <resultMap id="BaseResultMap" type="com.sdw.entity.Appointment">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="randomhouseid" jdbcType="BIGINT" property="randomhouseid" />
+    <result column="userid" jdbcType="BIGINT" property="userid" />
+    <association property="user" javaType="com.sdw.entity.User" columnPrefix="u_">
+      <!-- 这里column里面是定义的别名和你查询的语句 -->
+      <id column="id" property="userid"/>
+      <result column="user" property="username"/>
+      <result column="tel" property="tel"/>
+      <result column="imgurl" property="imgurl"/>
+    </association>
+    <association property="randomhouse" javaType="com.sdw.entity.Randomhouse" columnPrefix="r_">
+      <!-- 这里column里面是定义的别名和你查询的语句 -->
+      <id column="id" property="id"/>
+
+    </association>
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from appointment
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.sdw.entity.Appointment" useGeneratedKeys="true">
+    insert into appointment (randomhouseid, userid)
+    values (#{randomhouseid,jdbcType=BIGINT}, #{userid,jdbcType=BIGINT})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.sdw.entity.Appointment">
+    update appointment
+    set randomhouseid = #{randomhouseid,jdbcType=BIGINT},
+      userid = #{userid,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select id, randomhouseid, userid
+    from appointment
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select a.id, a.randomhouseid, a.userid,u.userid as u_userid,
+           u.username as u_username,u.imgurl as u_imgurl,
+           u.tel as u_tel,r.id as r_id
+    from appointment a INNER JOIN user u on (a.userid=u.userid)
+                       INNER JOIN randomhouse r on (a.randomhouseid=r.id)
+  </select>
+</mapper>

@@ -3,6 +3,7 @@
     <words>
       <w>beforuser</w>
       <w>bname</w>
+      <w>bookdescribe</w>
       <w>bookid</w>
       <w>bookname</w>
       <w>booktype</w>
@@ -35,6 +36,7 @@
       <w>qiniu</w>
       <w>qisnhi</w>
       <w>randomhouse</w>
+      <w>randomhouseid</w>
       <w>realname</w>
       <w>regist</w>
       <w>rownumbers</w>
@@ -43,6 +45,7 @@
       <w>userid</w>
       <w>userindex</w>
       <w>zhui</w>
+      <w>ztime</w>
     </words>
   </dictionary>
 </component>

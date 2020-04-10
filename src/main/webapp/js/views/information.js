@@ -16,6 +16,7 @@ $(function () {
                 {field: 'id', align: 'center', title: 'id', width: 1},
                 {field: 'informationtitle', align: 'center', title: '资讯标题', width: 1},
                 {field: 'information', align: 'center', title: '资讯内容', width: 1},
+                {field: 'imgurl', align: 'center', title: '资讯图片', width: 1},
             ]
         ],
 
@@ -136,5 +137,23 @@ function searchBtn() {
         keyword: value
     });
 
+}
+function submit2(){
+    var type = "file";          //后台接收时需要的参数名称，自定义即可
+    var id = "cert";            //即input的id，用来寻找值
+    var formData = new FormData();
+    console.log(formData)
+    formData.append(type, $("#"+id)[0].files[0]);    //生成一对表单属性
+    $.ajax({
+        type: "POST",           //因为是传输文件，所以必须是post
+        url: '/uploadImg',         //对应的后台处理类的地址
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (data) {
+            console.log(data.url)
+            $("#imgurl").val(data.url)
+        }
+    });
 }
 
